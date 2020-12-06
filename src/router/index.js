@@ -1,15 +1,15 @@
 import Vue from "vue";
 import VueRouter from "vue-router";
-// import Home from "../views/Home.vue";
+import Home from "../views/Home.vue";
 
 Vue.use(VueRouter);
 
 const routes = [
-  // {
-  //   path: "/",
-  //   name: "Home",
-  //   component: Home
-  // },
+  {
+    path: "/",
+    name: "home",
+    component: Home
+  },
   {
     path: "/login",
     name: "Login",
@@ -26,13 +26,13 @@ const routes = [
   },
   {
     path: "/bootcamps",
-    name: "Bootcamps",
+    name: "bootcamps",
     component: () => import("../views/bootcamp/Bootcamps.vue")
   },
   {
-    path: "/bootcamp/:id",
+    path: "/bootcamps/:id",
     name: "view-bootcamp",
-    component: () => import("../views/bootcamp/ViewBootcamp.vue")
+    component: () => import("../views/bootcamp/Bootcamp.vue")
   },
   {
     path: "/review/add",

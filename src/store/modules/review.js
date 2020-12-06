@@ -6,7 +6,7 @@ const state = () => ({
 });
 
 const getters = {
-  getReviews(state){
+  getReviews(state) {
     return state.all;
   }
 };

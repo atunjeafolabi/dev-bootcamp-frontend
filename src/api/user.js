@@ -3,27 +3,6 @@ import axios from "axios";
 import { DEVCAMPER_CONFIG } from "../config";
 
 export default {
-  getBootcamps(page, limit) {
-    var queryParams = "";
-
-    if (page !== undefined) {
-      queryParams = "?page=" + page;
-    }
-
-    if(limit !== undefined){
-      if(page !== undefined){
-        queryParams = queryParams + '&limit=' + limit;
-      }else {
-        queryParams = "?limit=" + limit;
-      }
-    }
-
-    return axios.get(DEVCAMPER_CONFIG.API_URL + "bootcamps" + queryParams);
-  },
-
-  getBootcamp(id) {
-    return axios.get(DEVCAMPER_CONFIG.API_URL + "bootcamps/" + id);
-  }
 
   // /*
   //  GET 	/api/v1/cafes/{slug}/edit
@@ -60,37 +39,11 @@ export default {
   //     );
   // },
 
-  // /*
-  //  POST  /api/v1/cafes
-  //  */
-  // postAddNewCafe: function( companyName, companyID, companyType, website, locationName, address, city, state, zip, lat, lng, brewMethods, matcha, tea ){
+  createUser(user){
 
-  //     let formData = new FormData();
+      return axios.post( DEVCAMPER_CONFIG.API_URL + 'auth/register', user);
+  },
 
-  //     formData.append('company_name', companyName);
-  //     formData.append('company_id', companyID);
-  //     formData.append('company_type', companyType);
-  //     formData.append('website', website);
-  //     formData.append('location_name', locationName);
-  //     formData.append('address', address);
-  //     formData.append('city', city);
-  //     formData.append('state', state);
-  //     formData.append('zip', zip);
-  //     formData.append('lat', lat);
-  //     formData.append('lng', lng);
-  //     formData.append('brew_methods', JSON.stringify( brewMethods ) );
-  //     formData.append('matcha', matcha);
-  //     formData.append('tea', tea);
-
-  //     return axios.post( ROAST_CONFIG.API_URL + '/cafes',
-  //         formData,
-  //         {
-  //             headers: {
-  //                 'Content-Type': 'multipart/form-data'
-  //             }
-  //         }
-  //     );
-  // },
   // /*
   //  POST  /api/v1/cafes/{cafeID}/like
   //  */

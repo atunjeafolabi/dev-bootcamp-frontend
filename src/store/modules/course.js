@@ -1,14 +1,13 @@
-import BootcampAPI from "../../api/bootcamp";
-import LOADING from "../../utils/constants";
+import CourseAPI from "../../api/course";
 
 export default {
   namespaced: true,
   state: {
-    bootcamps: [],
-    bootcampsLoadStatus: LOADING.NOT_STARTED,
+    courses: [],
+    coursesLoadStatus: 0,
 
-    bootcamp: {},
-    bootcampLoadStatus: LOADING.NOT_STARTED
+    course: {},
+    courseLoadStatus: 0
 
     // cafe: {},
     // cafeLoadStatus: 0,
@@ -30,38 +29,38 @@ export default {
     // cafeDeletedStatus: 0,
     // cafeDeleteText: '',
 
-    // bootcampsView: 'map'
+    // coursesView: 'map'
   },
 
   actions: {
-    // Loads the bootcamps from the API
-    loadBootcamps({ commit }, { page, limit }) {
-      commit("setBootcampsLoadStatus", LOADING.IN_PROGRESS);
-
-      BootcampAPI.getBootcamps(page, limit)
+    // Loads all the courses for a bootcamp from the API
+    loadCourses({ commit }, bootcampId) {
+      commit("setCoursesLoadStatus", 1);
+      CourseAPI.getCourses(bootcampId)
         .then(response => {
-          commit("setBootcamps", response.data);
-          commit("setBootcampsLoadStatus", LOADING.SUCCESS);
+          commit("setCourses", response.data);
+          commit("setCoursesLoadStatus", 2);
         })
         .catch(() => {
-          commit("setBootcamps", []);
-          commit("setBootcampsLoadStatus", LOADING.FAILURE);
-        });
-    },
-
-    loadBootcamp({ commit }, data) {
-      commit("setBootcampLoadStatus", LOADING.IN_PROGRESS);
-
-      BootcampAPI.getBootcamp(data.id)
-        .then(response => {
-          commit("setBootcamp", response.data);
-          commit("setBootcampLoadStatus", LOADING.SUCCESS);
-        })
-        .catch(function() {
-          commit("setBootcamp", {});
-          commit("setBootcampLoadStatus", LOADING.FAILURE);
+          commit("setCourses", []);
+          commit("setCoursesLoadStatus", 3);
         });
     }
+
+    // loadcourse({commit}, data ){
+
+    //     commit( 'setcourseLoadStatus', 1 );
+
+    //     CourseAPI.getcourse( data.id )
+    //         .then((response) => {
+    //             commit( 'setcourse', response.data.data );
+    //             commit( 'setcourseLoadStatus', 2 );
+    //         })
+    //         .catch( function(){
+    //             commit( 'setcourse', {} );
+    //             commit( 'setcourseLoadStatus', 3 );
+    //         });
+    // },
 
     /*
          Loads a cafe to edit from the API
@@ -69,7 +68,7 @@ export default {
     // loadCafeEdit( { commit }, data ){
     //     commit( 'setCafeEditLoadStatus', 1 );
 
-    //     BootcampAPI.getCafeEdit( data.slug )
+    //     courseAPI.getCafeEdit( data.slug )
     //         .then( function( response ){
     //             commit( 'setCafeEdit', response.data );
     //             commit( 'setCafeEditLoadStatus', 2 );
@@ -87,7 +86,7 @@ export default {
 
     //     commit( 'setCafeEditStatus', 1 );
 
-    //     BootcampAPI.putEditCafe( data.slug, data.company_name, data.company_id, data.company_type, data.website, data.location_name, data.address, data.city, data.state, data.zip, data.lat, data.lng, data.brew_methods, data.matcha, data.tea )
+    //     courseAPI.putEditCafe( data.slug, data.company_name, data.company_id, data.company_type, data.website, data.location_name, data.address, data.city, data.state, data.zip, data.lat, data.lng, data.brew_methods, data.matcha, data.tea )
     //         .then( function( response ){
     //             console.log(response);
 
@@ -103,7 +102,7 @@ export default {
     //             }
 
     //             commit( 'setCafeEditStatus', 2 );
-    //             dispatch( 'loadbootcamps' );
+    //             dispatch( 'loadcourses' );
     //         })
     //         .catch( function(error){
     //             commit( 'setCafeEditStatus', 3 );
@@ -115,7 +114,7 @@ export default {
 
     //     commit( 'setCafeAddedStatus', 1 );
 
-    //     BootcampAPI.postAddNewCafe( data.company_name, data.company_id, data.company_type, data.website, data.location_name, data.address, data.city, data.state, data.zip, data.lat, data.lng, data.brew_methods, data.matcha, data.tea )
+    //     courseAPI.postAddNewCafe( data.company_name, data.company_id, data.company_type, data.website, data.location_name, data.address, data.city, data.state, data.zip, data.lat, data.lng, data.brew_methods, data.matcha, data.tea )
     //         .then( function( response ){
     //             console.log(response)
 
@@ -127,7 +126,7 @@ export default {
 
     //             commit( 'setCafeAddedStatus', 2 );
     //             commit( 'setCafeAdded', response.data );
-    //             dispatch( 'loadbootcamps' );
+    //             dispatch( 'loadcourses' );
     //         })
     //         .catch( function(error){
     //             console.log(error.response)
@@ -140,10 +139,10 @@ export default {
     //     commit( 'setCafeUnlikeActionStatus', 0 );
     // },
 
-    // deleteBootcamp( { commit, state, dispatch }, data ){
+    // deletecourse( { commit, state, dispatch }, data ){
     //     commit( 'setCafeDeleteStatus', 1 );
 
-    //     BootcampAPI.deleteCafe( data.slug )
+    //     courseAPI.deleteCafe( data.slug )
     //         .then( function( response ){
 
     //             if( typeof response.data.cafe_delete_pending !== 'undefined' ){
@@ -154,7 +153,7 @@ export default {
 
     //             commit( 'setCafeDeleteStatus', 2 );
 
-    //             dispatch( 'loadbootcamps' );
+    //             dispatch( 'loadcourses' );
     //         })
     //         .catch( function(){
     //             commit( 'setCafeDeleteStatus', 3 );
@@ -163,24 +162,24 @@ export default {
   },
 
   mutations: {
-    // setBootcampsLoadStatus( state, status ){
-    //     state.bootcampsLoadStatus = status;
+    // setcoursesLoadStatus( state, status ){
+    //     state.coursesLoadStatus = status;
     // },
 
-    setBootcamps(state, bootcamps) {
-      state.bootcamps = bootcamps;
+    setCourses(state, courses) {
+      state.courses = courses;
     },
 
-    setBootcampsLoadStatus(state, status) {
-      state.bootcampsLoadStatus = status;
+    setCoursesLoadStatus(state, status) {
+      state.coursesLoadStatus = status;
     },
 
-    setBootcamp(state, bootcamp) {
-      state.bootcamp = bootcamp;
+    setCourse(state, course) {
+      state.course = course;
     },
 
-    setBootcampLoadStatus(state, status) {
-      state.bootcampLoadStatus = status;
+    setCourseLoadStatus(state, status) {
+      state.courseLoadStatus = status;
     }
 
     // setCafe( state, cafe ){
@@ -240,9 +239,9 @@ export default {
     //  Update a loaded cafe's like status.
     //  */
     // updateCafeLikedStatus( state, data ){
-    //     for( var i = 0; i < state.bootcamps.length; i++ ){
-    //         if( state.bootcamps[i].slug == data.slug ){
-    //             state.bootcamps[i].user_like_count = data.count;
+    //     for( var i = 0; i < state.courses.length; i++ ){
+    //         if( state.courses[i].slug == data.slug ){
+    //             state.courses[i].user_like_count = data.count;
     //         }
     //     }
     // },
@@ -255,18 +254,18 @@ export default {
     //     state.cafeDeleteText = text;
     // },
 
-    // setbootcampsView( state, view ){
-    //     state.bootcampsView = view
+    // setcoursesView( state, view ){
+    //     state.coursesView = view
     // }
   },
 
   getters: {
-    // getbootcampsLoadStatus( state ){
-    //     return state.bootcampsLoadStatus;
+    // getcoursesLoadStatus( state ){
+    //     return state.coursesLoadStatus;
     // },
 
-    getBootcamps(state) {
-      return state.bootcamps;
+    getCourses(state) {
+      return state.courses;
     }
 
     // getCafeLoadStatus( state ){
@@ -334,8 +333,8 @@ export default {
     //     return state.cafeDeleteText;
     // },
 
-    // getbootcampsView( state ){
-    //     return state.bootcampsView;
+    // getcoursesView( state ){
+    //     return state.coursesView;
     // }
   }
 };

@@ -91,55 +91,59 @@
           </div>
           <!-- Main col -->
           <div class="col-md-8">
+            <loader v-if="bootcampsLoadStatus == 1" />
             <!-- Bootcamps -->
-            <div
-              class="card mb-3"
-              v-for="bootcamp in bootcamps"
-              :key="bootcamp._id"
-            >
-              <div class="row no-gutters">
-                <div class="col-md-4">
-                  <img :src="'assets/img/' + bootcamp.photo" class="card-img" alt="..." />
-                </div>
-                <div class="col-md-8">
-                  <div class="card-body">
-                    <h5 class="card-title">
-                      <router-link
-                        :to="{
-                          name: 'view-bootcamp',
-                          params: { id: bootcamp._id }
-                        }"
-                      >
-                        {{ bootcamp.name }}
-                        <span class="float-right badge badge-success">
-                          {{ bootcamp.averageRating }}
-                        </span>
-                      </router-link>
-                    </h5>
-                    <span class="badge badge-dark mb-2">
-                      {{bootcamp.location.city}}, {{bootcamp.location.state}}
-                    </span>
-                    <p class="card-text">
-                      {{bootcamp.careers.toString()}}
-                    </p>
+            <span v-if="bootcampsLoadStatus == 2">
+              <div
+                class="card mb-3"
+                v-for="bootcamp in bootcamps.data"
+                :key="bootcamp._id"
+              >
+                <div class="row no-gutters">
+                  <div class="col-md-4">
+                    <img
+                      :src="'assets/img/' + bootcamp.photo"
+                      class="card-img"
+                      alt="..."
+                    />
+                  </div>
+                  <div class="col-md-8">
+                    <div class="card-body">
+                      <h5 class="card-title">
+                        <router-link
+                          :to="{
+                            name: 'view-bootcamp',
+                            params: { id: bootcamp._id }
+                          }"
+                        >
+                          {{ bootcamp.name }}
+                          <span class="float-right badge badge-success">
+                            {{ bootcamp.averageRating }}
+                          </span>
+                        </router-link>
+                      </h5>
+                      <span class="badge badge-dark mb-2">
+                        {{ bootcamp.location.city }},
+                        {{ bootcamp.location.state }}
+                      </span>
+                      <p class="card-text">
+                        {{ bootcamp.careers.toString() }}
+                      </p>
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
-            <!-- Pagination -->
-            <nav aria-label="Page navigation example">
-              <ul class="pagination">
-                <li class="page-item">
-                  <a class="page-link" href="#">Previous</a>
-                </li>
-                <li class="page-item"><a class="page-link" href="#">1</a></li>
-                <li class="page-item"><a class="page-link" href="#">2</a></li>
-                <li class="page-item"><a class="page-link" href="#">3</a></li>
-                <li class="page-item">
-                  <a class="page-link" href="#">Next</a>
-                </li>
-              </ul>
-            </nav>
+            </span>
+            <!-- pagination -->
+            <pagination
+              v-if="bootcampsLoadStatus == 2"
+              :total-pages="bootcamps.pagination.page_count"
+              :total="bootcamps.pagination.total_count"
+              :per-page="bootcamps.pagination.per_page"
+              :current-page="currentPage"
+              @pagechanged="onPageChange"
+            />
+            <request-not-successful v-if="bootcampsLoadStatus == 3" />
           </div>
         </div>
       </div>
@@ -148,18 +152,44 @@
 </template>
 <script>
 import { mapState } from "vuex";
+import Loader from "../../components/Loader";
+import RequestNotSuccessful from "../../components/RequestNotSuccessful";
+import Pagination from "../../components/Pagination.vue";
 
 export default {
   name: "bootcamps",
-  computed: mapState({
-    bootcamps: state => state.bootcamp.bootcamps,
-    reviews: state => state.review.all
-  }),
+  components: {
+    Loader,
+    RequestNotSuccessful,
+    Pagination
+  },
+  data() {
+    return {
+      currentPage: 1
+    };
+  },
+  computed: {
+    ...mapState({
+      bootcamps: state => state.bootcamp.bootcamps,
+      bootcampsLoadStatus: state => state.bootcamp.bootcampsLoadStatus,
+      reviews: state => state.review.all
+    })
+  },
   methods: {
-
+    onPageChange(page) {
+      console.log(page);
+      this.currentPage = page;
+      this.$store.dispatch("bootcamp/loadBootcamps", {
+        page: this.currentPage,
+        limit: 4,
+      });
+    }
   },
   created() {
-    this.$store.dispatch("bootcamp/loadBootcamps");
+    this.$store.dispatch("bootcamp/loadBootcamps", {
+      page: this.$route.query.page,
+      limit: 4,
+    });
     this.$store.dispatch("review/getAllReviews");
   }
 };

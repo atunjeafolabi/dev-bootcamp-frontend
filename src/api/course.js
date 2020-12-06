@@ -3,26 +3,14 @@ import axios from "axios";
 import { DEVCAMPER_CONFIG } from "../config";
 
 export default {
-  getBootcamps(page, limit) {
-    var queryParams = "";
-
-    if (page !== undefined) {
-      queryParams = "?page=" + page;
-    }
-
-    if(limit !== undefined){
-      if(page !== undefined){
-        queryParams = queryParams + '&limit=' + limit;
-      }else {
-        queryParams = "?limit=" + limit;
-      }
-    }
-
-    return axios.get(DEVCAMPER_CONFIG.API_URL + "bootcamps" + queryParams);
+  getCourses(bootcampId) {
+    return axios.get(
+      DEVCAMPER_CONFIG.API_URL + `bootcamps/${bootcampId}/courses`
+    );
   },
 
-  getBootcamp(id) {
-    return axios.get(DEVCAMPER_CONFIG.API_URL + "bootcamps/" + id);
+  getCourse(id) {
+    return axios.get(DEVCAMPER_CONFIG.API_URL + "courses/" + id);
   }
 
   // /*

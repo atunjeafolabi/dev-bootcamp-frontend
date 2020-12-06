@@ -2,8 +2,8 @@
   <!-- Navbar -->
   <nav class="navbar navbar-expand-md navbar-dark bg-primary">
     <div class="container">
-      <a class="navbar-brand" href="index.html"
-        ><i class="fas fa-laptop-code"></i> DevCamper</a
+      <router-link class="navbar-brand" :to="{ name: 'home' }"
+        ><i class="fas fa-laptop-code"></i> DevCamper</router-link
       >
       <button
         class="navbar-toggler"
@@ -30,7 +30,7 @@
             <a class="nav-link" href="#">|</a>
           </li>
           <li class="nav-item">
-            <router-link class="nav-link" to="/bootcamps">
+            <router-link class="nav-link" to="bootcamps">
               <i class="fas fa-user-plus"></i> Browse Bootcamps
             </router-link>
           </li>

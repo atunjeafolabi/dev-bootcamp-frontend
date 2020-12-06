@@ -1,6 +1,5 @@
 <template>
   <div class="register">
-    <!-- Register -->
     <section class="form mt-5">
       <div class="container">
         <div class="row">
@@ -12,12 +11,16 @@
                   Register to list your bootcamp or rate, review and favorite
                   bootcamps
                 </p>
-                <form>
+                <div v-if="hasValidationErrors" class="alert alert-danger" role="alert">
+                  {{validationErrors}}
+                </div>
+                <form v-if="showForm" @submit.prevent ="register()">
                   <div class="form-group">
                     <label for="name">Name</label>
                     <input
                       type="text"
                       name="name"
+                      v-model="user.name"
                       class="form-control"
                       placeholder="Enter full name"
                       required
@@ -28,6 +31,7 @@
                     <input
                       type="email"
                       name="email"
+                      v-model="user.email"
                       class="form-control"
                       placeholder="Enter email"
                       required
@@ -38,6 +42,7 @@
                     <input
                       type="password"
                       name="password"
+                      v-model="user.password"
                       class="form-control"
                       placeholder="Enter password"
                       required
@@ -61,7 +66,7 @@
                         class="form-check-input"
                         type="radio"
                         name="role"
-                        value="user"
+                        @click="setRole('user')"
                         checked
                       />
                       <label class="form-check-label">
@@ -73,7 +78,7 @@
                         class="form-check-input"
                         type="radio"
                         name="role"
-                        value="publisher"
+                        @click="setRole('publisher')"
                       />
                       <label class="form-check-label">
                         Bootcamp Publisher
@@ -85,13 +90,22 @@
                     order to add it to DevCamper.
                   </p>
                   <div class="form-group">
-                    <input
+                    <button
+                      :disabled = isLoading
                       type="submit"
-                      value="Register"
                       class="btn btn-primary btn-block"
-                    />
+                    >
+                      <span v-if="isLoading" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>&nbsp;
+                      Register
+                    </button>
                   </div>
                 </form>
+                <div class="jumbotron jumbotron-fluid" v-if="isRegistrationSuccessful">
+                  <div class="container">
+                    <h1 class="display-4">Registration Success</h1>
+                    <p class="lead">Your account has been created. Login</p>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -100,3 +114,59 @@
     </section>
   </div>
 </template>
+<script>
+import { mapState, mapMutations } from 'vuex';
+import LOADING from "../utils/constants";
+
+export default {
+  name: 'register',
+  data(){
+    return {
+      user: {
+        name: '',
+        email: '',
+        password: '',
+        role: 'user'
+      }
+    }
+  },
+
+  computed: {
+    ...mapState({
+      userCreationLoadStatus: state => state.user.userCreationLoadStatus,
+      validationErrors: state => state.user.validationErrors.createUser
+    }),
+    isLoading(){
+      return this.userCreationLoadStatus == LOADING.IN_PROGRESS;
+    },
+    isRegistrationSuccessful(){
+      return this.userCreationLoadStatus == LOADING.SUCCESS;
+    },
+    isFormSubmitted(){
+      return this.userCreationLoadStatus !== LOADING.NOT_STARTED;
+    },
+    showForm(){
+      return !this.isFormSubmitted || !this.isRegistrationSuccessful;
+    },
+    hasValidationErrors(){
+      return this.validationErrors !== '';
+    }
+  },
+
+  methods: {
+    ...mapMutations('user', [
+      'setUserCreationLoadStatus',
+    ]),
+    setRole(role){
+      this.user.role = role;
+    },
+    register(){
+      this.$store.dispatch('user/createUser', this.user);
+    },
+  },
+  destroyed () {
+    // Reset userCreationLoadStatus state to 0
+    this.setUserCreationLoadStatus(LOADING.NOT_STARTED);
+  },
+}
+</script>
