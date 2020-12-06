@@ -30,7 +30,7 @@
             <a class="nav-link" href="#">|</a>
           </li>
           <li class="nav-item">
-            <router-link class="nav-link" to="bootcamps">
+            <router-link class="nav-link" :to="{ name: 'bootcamps' }">
               <i class="fas fa-user-plus"></i> Browse Bootcamps
             </router-link>
           </li>

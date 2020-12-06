@@ -261,81 +261,12 @@ export default {
   },
 
   getters: {
-    // getbootcampsLoadStatus( state ){
-    //     return state.bootcampsLoadStatus;
-    // },
-
     getBootcamps(state) {
       return state.bootcamps;
+    },
+
+    getBootcamp(state) {
+      return state.bootcamp;
     }
-
-    // getCafeLoadStatus( state ){
-    //     return state.cafeLoadStatus;
-    // },
-
-    // getCafe( state ){
-    //     return state.cafe;
-    // },
-
-    // /*
-    //  Gets the cafe we are editing
-    //  */
-    // getCafeEdit( state ){
-    //     return state.cafeEdit;
-    // },
-
-    // /*
-    //  Gets the cafe edit status
-    //  */
-    // getCafeEditStatus( state ){
-    //     return state.cafeEditStatus;
-    // },
-
-    // getCafeEditText( state ){
-    //     return state.cafeEditText;
-    // },
-
-    // /*
-    //  Gets the cafe edit load status
-    //  */
-    // getCafeEditLoadStatus( state ){
-    //     return state.cafeEditLoadStatus;
-    // },
-
-    // getAddedCafe( state ){
-    //     return state.cafeAdded;
-    // },
-
-    // getCafeAddStatus(state){
-    //     return state.cafeAddStatus;
-    // },
-
-    // getCafeAddText( state ){
-    //     return state.cafeAddText;
-    // },
-
-    // getCafeLikedStatus( state ){
-    //     return state.cafeLiked;
-    // },
-
-    // getCafeLikeActionStatus( state ){
-    //     return state.cafeLikeActionStatus;
-    // },
-
-    // getCafeUnlikeActionStatus( state ){
-    //     return state.cafeUnlikeActionStatus;
-    // },
-
-    // getCafeDeletedStatus( state ){
-    //     return state.cafeDeletedStatus;
-    // },
-
-    // getCafeDeletedText( state ){
-    //     return state.cafeDeleteText;
-    // },
-
-    // getbootcampsView( state ){
-    //     return state.bootcampsView;
-    // }
   }
 };

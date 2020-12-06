@@ -8,14 +8,13 @@ export default {
     userCreationLoadStatus: LOADING.NOT_STARTED,
     userCreated: false,
     validationErrors: {
-        createUser: "",
-        editUser: "",
-        login: ""
+      createUser: "",
+      editUser: "",
+      login: ""
     }
   },
 
   actions: {
-    // Create a new user
     createUser({ commit }, user) {
       commit("setUserCreationLoadStatus", LOADING.IN_PROGRESS);
 
@@ -25,13 +24,13 @@ export default {
           commit("setUserCreationLoadStatus", LOADING.SUCCESS);
           commit("setCreateUserValidationErrors", "");
         })
-        .catch((error) => {
-          console.log(error.response.data)
+        .catch(error => {
+          console.log(error.response.data);
           commit("setUserCreated", false);
-          commit('setCreateUserValidationErrors', error.response.data.error)
+          commit("setCreateUserValidationErrors", error.response.data.error);
           commit("setUserCreationLoadStatus", LOADING.FAILURE);
         });
-    },
+    }
 
     // loadUser({ commit }, data) {
     //   commit("setUserLoadStatus", 1);
@@ -49,7 +48,6 @@ export default {
   },
 
   mutations: {
-
     setUserCreated(state, userCreated) {
       state.userCreated = userCreated;
     },
@@ -57,8 +55,8 @@ export default {
     setUserCreationLoadStatus(state, status) {
       state.userCreationLoadStatus = status;
     },
-    setCreateUserValidationErrors(state, errors){
-        state.validationErrors.createUser = errors;
+    setCreateUserValidationErrors(state, errors) {
+      state.validationErrors.createUser = errors;
     }
   },
 

@@ -181,14 +181,14 @@ export default {
       this.currentPage = page;
       this.$store.dispatch("bootcamp/loadBootcamps", {
         page: this.currentPage,
-        limit: 4,
+        limit: 4
       });
     }
   },
   created() {
     this.$store.dispatch("bootcamp/loadBootcamps", {
       page: this.$route.query.page,
-      limit: 4,
+      limit: 4
     });
     this.$store.dispatch("review/getAllReviews");
   }

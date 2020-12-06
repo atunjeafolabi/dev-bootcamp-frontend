@@ -10,10 +10,10 @@ export default {
       queryParams = "?page=" + page;
     }
 
-    if(limit !== undefined){
-      if(page !== undefined){
-        queryParams = queryParams + '&limit=' + limit;
-      }else {
+    if (limit !== undefined) {
+      if (page !== undefined) {
+        queryParams = queryParams + "&limit=" + limit;
+      } else {
         queryParams = "?limit=" + limit;
       }
     }

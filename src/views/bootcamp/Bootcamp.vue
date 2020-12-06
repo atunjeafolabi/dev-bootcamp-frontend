@@ -13,7 +13,8 @@
             </p>
             <!-- Avg cost -->
             <p class="lead mb-4">
-              Average Course Cost: <span class="text-primary">${{bootcamp.averageCost}}</span>
+              Average Course Cost:
+              <span class="text-primary">${{ bootcamp.averageCost }}</span>
             </p>
           </span>
           <request-not-successful v-if="bootcampLoadStatus == 3" />
@@ -77,7 +78,7 @@
             </router-link>
             <router-link
               class="btn btn-light btn-block my-3"
-              :to="{ name: 'add-review' }"
+              :to="{ name: 'add-review', params: { bootcampId: bootcamp._id } }"
             >
               <i class="fas fa-pencil-alt"></i> Write a Review
             </router-link>

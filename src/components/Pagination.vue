@@ -1,6 +1,6 @@
 <template>
   <ul class="pagination">
-    <li class="page-item" :class="{disabled: isInFirstPage}">
+    <li class="page-item" :class="{ disabled: isInFirstPage }">
       <a
         class="page-link"
         @click="onClickFirstPage"
@@ -10,7 +10,7 @@
       </a>
     </li>
 
-    <li class="page-item" :class="{disabled: isInFirstPage}">
+    <li class="page-item" :class="{ disabled: isInFirstPage }">
       <a
         class="page-link"
         @click="onClickPreviousPage"
@@ -20,7 +20,12 @@
       </a>
     </li>
 
-    <li v-for="page in pages" class="page-item" :class="{ active: isPageActive(page.name), disabled: page.isDisabled }" :key="page.name">
+    <li
+      v-for="page in pages"
+      class="page-item"
+      :class="{ active: isPageActive(page.name), disabled: page.isDisabled }"
+      :key="page.name"
+    >
       <a
         class="page-link"
         @click="onClickPage(page.name)"
@@ -30,7 +35,7 @@
       </a>
     </li>
 
-    <li class="page-item" :class="{disabled: isInLastPage}">
+    <li class="page-item" :class="{ disabled: isInLastPage }">
       <a
         class="page-link"
         @click="onClickNextPage"
@@ -40,7 +45,7 @@
       </a>
     </li>
 
-    <li class="page-item" :class="{disabled: isInLastPage}">
+    <li class="page-item" :class="{ disabled: isInLastPage }">
       <a
         class="page-link"
         @click="onClickLastPage"
@@ -139,7 +144,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-a:hover{
-    cursor: pointer;
+a:hover {
+  cursor: pointer;
 }
 </style>

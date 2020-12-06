@@ -35,7 +35,7 @@ const routes = [
     component: () => import("../views/bootcamp/Bootcamp.vue")
   },
   {
-    path: "/review/add",
+    path: "/bootcamps/:bootcampId/review/add",
     name: "add-review",
     component: () => import("../views/review/AddReview.vue")
   },

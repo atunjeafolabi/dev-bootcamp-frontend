@@ -11,11 +11,22 @@
                   Register to list your bootcamp or rate, review and favorite
                   bootcamps
                 </p>
-                <div v-if="hasServerValidationErrors" class="alert alert-danger" role="alert">
-                  {{serverValidationErrors}}
+                <div
+                  v-if="hasServerValidationErrors"
+                  class="alert alert-danger"
+                  role="alert"
+                >
+                  {{ serverValidationErrors }}
                 </div>
-                <form v-if="displayForm" @submit.prevent ="submitForm()" novalidate="novalidate">
-                  <div class="form-group" :class="{ 'text-danger': $v.user.name.$error }">
+                <form
+                  v-if="displayForm"
+                  @submit.prevent="submitForm()"
+                  novalidate="novalidate"
+                >
+                  <div
+                    class="form-group"
+                    :class="{ 'text-danger': $v.user.name.$error }"
+                  >
                     <label for="name">Name</label>
                     <input
                       type="text"
@@ -27,7 +38,10 @@
                       required
                     />
                   </div>
-                  <div class="form-group" :class="{ 'text-danger': $v.user.email.$error }">
+                  <div
+                    class="form-group"
+                    :class="{ 'text-danger': $v.user.email.$error }"
+                  >
                     <label for="email">Email Address</label>
                     <input
                       type="email"
@@ -39,7 +53,10 @@
                       required
                     />
                   </div>
-                  <div class="form-group" :class="{ 'text-danger': $v.user.password.$error }">
+                  <div
+                    class="form-group"
+                    :class="{ 'text-danger': $v.user.password.$error }"
+                  >
                     <label for="password">Password</label>
                     <input
                       type="password"
@@ -51,7 +68,10 @@
                       required
                     />
                   </div>
-                  <div class="mb-4" :class="{ 'text-danger': $v.user.confirmPassword.$error }">
+                  <div
+                    class="mb-4"
+                    :class="{ 'text-danger': $v.user.confirmPassword.$error }"
+                  >
                     <label for="confirm-password">Confirm Password</label>
                     <input
                       type="password"
@@ -68,7 +88,10 @@
                   </div>
                   <div class="card card-body mb-3">
                     <h5>User Role</h5>
-                    <div class="form-check" :class="{'text-danger': $v.user.role.$error}">
+                    <div
+                      class="form-check"
+                      :class="{ 'text-danger': $v.user.role.$error }"
+                    >
                       <input
                         class="form-check-input"
                         type="radio"
@@ -101,16 +124,24 @@
                   </p>
                   <div class="form-group">
                     <button
-                      :disabled = isButtonDisabled
+                      :disabled="isButtonDisabled"
                       type="submit"
                       class="btn btn-primary btn-block"
                     >
-                      <span v-if="isLoading" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>&nbsp;
-                      Register
+                      <span
+                        v-if="isLoading"
+                        class="spinner-border spinner-border-sm"
+                        role="status"
+                        aria-hidden="true"
+                      ></span
+                      >&nbsp; Register
                     </button>
                   </div>
                 </form>
-                <div class="jumbotron jumbotron-fluid" v-if="isRegistrationSuccessful">
+                <div
+                  class="jumbotron jumbotron-fluid"
+                  v-if="isRegistrationSuccessful"
+                >
                   <div class="container">
                     <h1 class="display-4">Registration Success</h1>
                     <p class="lead">Your account has been created. Login</p>
@@ -125,29 +156,29 @@
   </div>
 </template>
 <script>
-import { mapState, mapMutations } from 'vuex';
-import { validationMixin } from 'vuelidate'
-import { required, minLength, sameAs, email,  } from 'vuelidate/lib/validators'
+import { mapState, mapMutations } from "vuex";
+import { validationMixin } from "vuelidate";
+import { required, minLength, sameAs, email } from "vuelidate/lib/validators";
 
 import LOADING from "../utils/constants";
 
-const DEFAULT_ROLE = '';  //user
+const DEFAULT_ROLE = ""; //user
 
 export default {
-  name: 'register',
-  data(){
+  name: "register",
+  data() {
     return {
       user: {
-        name: '',
-        email: '',
-        password: '',
-        confirmPassword: '',
+        name: "",
+        email: "",
+        password: "",
+        confirmPassword: "",
         role: DEFAULT_ROLE
       },
       validation: {
-        errors: [],
+        errors: []
       }
-    }
+    };
   },
   mixins: [validationMixin],
   validations: {
@@ -166,7 +197,7 @@ export default {
       },
       confirmPassword: {
         required,
-        sameAsPassword: sameAs('password')
+        sameAsPassword: sameAs("password")
       },
       role: {
         required
@@ -178,54 +209,52 @@ export default {
       userCreationLoadStatus: state => state.user.userCreationLoadStatus,
       serverValidationErrors: state => state.user.validationErrors.createUser
     }),
-    isLoading(){
+    isLoading() {
       return this.userCreationLoadStatus == LOADING.IN_PROGRESS;
     },
-    isButtonDisabled(){
+    isButtonDisabled() {
       return this.isLoading || !this.validationPasses;
     },
-    isRegistrationSuccessful(){
+    isRegistrationSuccessful() {
       return this.userCreationLoadStatus == LOADING.SUCCESS;
     },
-    isFormSubmitted(){
+    isFormSubmitted() {
       return this.userCreationLoadStatus !== LOADING.NOT_STARTED;
     },
-    displayForm(){
+    displayForm() {
       return !this.isFormSubmitted || !this.isRegistrationSuccessful;
     },
-    hasServerValidationErrors(){
-      return this.serverValidationErrors !== '';
+    hasServerValidationErrors() {
+      return this.serverValidationErrors !== "";
     },
-    validationPasses(){
+    validationPasses() {
       return !this.$v.$invalid;
     }
   },
 
   methods: {
-    ...mapMutations('user', [
-      'setUserCreationLoadStatus',
-    ]),
-    setRole(role){
+    ...mapMutations("user", ["setUserCreationLoadStatus"]),
+    setRole(role) {
       this.$v.user.role = role;
     },
-    submitForm(){
+    submitForm() {
       this.triggerValidation();
-      if(!this.validationPasses){
+      if (!this.validationPasses) {
         return;
       }
-      this.$store.dispatch('user/createUser', this.user);
+      this.$store.dispatch("user/createUser", this.user);
     },
-    triggerValidation(){
+    triggerValidation() {
       this.$v.$touch();
     },
-    isDefaultRole(role){
-      console.log(role)
+    isDefaultRole(role) {
+      console.log(role);
       return role == DEFAULT_ROLE;
     }
   },
-  destroyed () {
+  destroyed() {
     // Reset userCreationLoadStatus state to 0
     this.setUserCreationLoadStatus(LOADING.NOT_STARTED);
-  },
-}
+  }
+};
 </script>
