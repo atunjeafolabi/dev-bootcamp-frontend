@@ -11,63 +11,71 @@
                   Register to list your bootcamp or rate, review and favorite
                   bootcamps
                 </p>
-                <div v-if="hasValidationErrors" class="alert alert-danger" role="alert">
-                  {{validationErrors}}
+                <div v-if="hasServerValidationErrors" class="alert alert-danger" role="alert">
+                  {{serverValidationErrors}}
                 </div>
-                <form v-if="showForm" @submit.prevent ="register()">
-                  <div class="form-group">
+                <form v-if="displayForm" @submit.prevent ="submitForm()" novalidate="novalidate">
+                  <div class="form-group" :class="{ 'text-danger': $v.user.name.$error }">
                     <label for="name">Name</label>
                     <input
                       type="text"
                       name="name"
-                      v-model="user.name"
+                      v-model="$v.user.name.$model"
                       class="form-control"
+                      :class="{ 'is-invalid': $v.user.name.$error }"
                       placeholder="Enter full name"
                       required
                     />
                   </div>
-                  <div class="form-group">
+                  <div class="form-group" :class="{ 'text-danger': $v.user.email.$error }">
                     <label for="email">Email Address</label>
                     <input
                       type="email"
                       name="email"
-                      v-model="user.email"
+                      v-model="$v.user.email.$model"
                       class="form-control"
+                      :class="{ 'is-invalid': $v.user.email.$error }"
                       placeholder="Enter email"
                       required
                     />
                   </div>
-                  <div class="form-group">
+                  <div class="form-group" :class="{ 'text-danger': $v.user.password.$error }">
                     <label for="password">Password</label>
                     <input
                       type="password"
                       name="password"
-                      v-model="user.password"
+                      v-model="$v.user.password.$model"
                       class="form-control"
+                      :class="{ 'is-invalid': $v.user.password.$error }"
                       placeholder="Enter password"
                       required
                     />
                   </div>
-                  <div class="form-group mb-4">
-                    <label for="password2">Confirm Password</label>
+                  <div class="mb-4" :class="{ 'text-danger': $v.user.confirmPassword.$error }">
+                    <label for="confirm-password">Confirm Password</label>
                     <input
                       type="password"
-                      name="password2"
+                      name="confirmPassword"
+                      v-model.trim="$v.user.confirmPassword.$model"
                       class="form-control"
+                      :class="{ 'is-invalid': $v.user.confirmPassword.$error }"
                       placeholder="Confirm password"
                       required
                     />
+                    <div class="invalid-feedback">
+                      Passwords must be thesame.
+                    </div>
                   </div>
-
                   <div class="card card-body mb-3">
                     <h5>User Role</h5>
-                    <div class="form-check">
+                    <div class="form-check" :class="{'text-danger': $v.user.role.$error}">
                       <input
                         class="form-check-input"
                         type="radio"
                         name="role"
-                        @click="setRole('user')"
-                        checked
+                        v-model="user.role"
+                        value="user"
+                        @change="$v.user.role.$touch"
                       />
                       <label class="form-check-label">
                         Regular User (Browse, Write reviews, etc)
@@ -78,7 +86,9 @@
                         class="form-check-input"
                         type="radio"
                         name="role"
-                        @click="setRole('publisher')"
+                        v-model="user.role"
+                        value="publisher"
+                        @change="$v.user.role.$touch"
                       />
                       <label class="form-check-label">
                         Bootcamp Publisher
@@ -91,7 +101,7 @@
                   </p>
                   <div class="form-group">
                     <button
-                      :disabled = isLoading
+                      :disabled = isButtonDisabled
                       type="submit"
                       class="btn btn-primary btn-block"
                     >
@@ -116,7 +126,12 @@
 </template>
 <script>
 import { mapState, mapMutations } from 'vuex';
+import { validationMixin } from 'vuelidate'
+import { required, minLength, sameAs, email,  } from 'vuelidate/lib/validators'
+
 import LOADING from "../utils/constants";
+
+const DEFAULT_ROLE = '';  //user
 
 export default {
   name: 'register',
@@ -126,18 +141,48 @@ export default {
         name: '',
         email: '',
         password: '',
-        role: 'user'
+        confirmPassword: '',
+        role: DEFAULT_ROLE
+      },
+      validation: {
+        errors: [],
       }
     }
   },
-
+  mixins: [validationMixin],
+  validations: {
+    user: {
+      name: {
+        required,
+        minLength: minLength(4)
+      },
+      email: {
+        required,
+        email
+      },
+      password: {
+        required,
+        minLength: minLength(4)
+      },
+      confirmPassword: {
+        required,
+        sameAsPassword: sameAs('password')
+      },
+      role: {
+        required
+      }
+    }
+  },
   computed: {
     ...mapState({
       userCreationLoadStatus: state => state.user.userCreationLoadStatus,
-      validationErrors: state => state.user.validationErrors.createUser
+      serverValidationErrors: state => state.user.validationErrors.createUser
     }),
     isLoading(){
       return this.userCreationLoadStatus == LOADING.IN_PROGRESS;
+    },
+    isButtonDisabled(){
+      return this.isLoading || !this.validationPasses;
     },
     isRegistrationSuccessful(){
       return this.userCreationLoadStatus == LOADING.SUCCESS;
@@ -145,11 +190,14 @@ export default {
     isFormSubmitted(){
       return this.userCreationLoadStatus !== LOADING.NOT_STARTED;
     },
-    showForm(){
+    displayForm(){
       return !this.isFormSubmitted || !this.isRegistrationSuccessful;
     },
-    hasValidationErrors(){
-      return this.validationErrors !== '';
+    hasServerValidationErrors(){
+      return this.serverValidationErrors !== '';
+    },
+    validationPasses(){
+      return !this.$v.$invalid;
     }
   },
 
@@ -158,11 +206,22 @@ export default {
       'setUserCreationLoadStatus',
     ]),
     setRole(role){
-      this.user.role = role;
+      this.$v.user.role = role;
     },
-    register(){
+    submitForm(){
+      this.triggerValidation();
+      if(!this.validationPasses){
+        return;
+      }
       this.$store.dispatch('user/createUser', this.user);
     },
+    triggerValidation(){
+      this.$v.$touch();
+    },
+    isDefaultRole(role){
+      console.log(role)
+      return role == DEFAULT_ROLE;
+    }
   },
   destroyed () {
     // Reset userCreationLoadStatus state to 0
