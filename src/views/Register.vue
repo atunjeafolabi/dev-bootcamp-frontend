@@ -233,7 +233,7 @@ export default {
   },
 
   methods: {
-    ...mapMutations("user", ["setUserCreationLoadStatus"]),
+    ...mapMutations("user", ["setUserCreationLoadStatus", "setCreateUserValidationErrors"]),
     setRole(role) {
       this.$v.user.role = role;
     },
@@ -255,6 +255,7 @@ export default {
   destroyed() {
     // Reset userCreationLoadStatus state to 0
     this.setUserCreationLoadStatus(LOADING.NOT_STARTED);
+    this.setCreateUserValidationErrors("");
   }
 };
 </script>

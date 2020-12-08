@@ -12,9 +12,9 @@ export default {
     // login
     loginRequestStatus: LOADING.NOT_STARTED,
     isLoggedIn: false,
-    token: '',
+    token: "",
 
-    // validation
+    // Validation errors from server
     validationErrors: {
       createUser: "",
       editUser: "",
@@ -53,38 +53,37 @@ export default {
     //     });
     // }
 
-
-    login({commit}, user){
-        commit('setLoginRequestStatus', LOADING.IN_PROGRESS);
-        return UserAPI.login(user)
-            .then((response) => {
-                commit('setLoginRequestStatus', LOADING.SUCCESS);
-                commit('setIsLoggedIn', response.data.success);
-                commit('setToken', response.data.token);
-                commit('setLoginValidationErrors', '')
-            }).catch((error) => {
-                if(error.response.data.error != undefined){
-                    // Request successful but with validation errors
-                    // i.e 400/401 status
-                    commit('setLoginRequestStatus', LOADING.SUCCESS);
-                    commit('setLoginValidationErrors', error.response.data.error)
-                    commit('setIsLoggedIn', error.response.data.success);
-                }else {
-                    // Request not successful
-                    commit('setLoginRequestStatus', LOADING.FAILURE);
-                }
-            })
+    login({ commit }, user) {
+      commit("setLoginRequestStatus", LOADING.IN_PROGRESS);
+      return UserAPI.login(user)
+        .then(response => {
+          commit("setLoginRequestStatus", LOADING.SUCCESS);
+          commit("setIsLoggedIn", response.data.success);
+          commit("setToken", response.data.token);
+          commit("setLoginValidationErrors", "");
+        })
+        .catch(error => {
+          if (error.response.data.error != undefined) {
+            // Request successful but with validation errors
+            // i.e 400/401 status
+            commit("setLoginRequestStatus", LOADING.SUCCESS);
+            commit("setLoginValidationErrors", error.response.data.error);
+            commit("setIsLoggedIn", error.response.data.success);
+          } else {
+            // Request not successful
+            commit("setLoginRequestStatus", LOADING.FAILURE);
+          }
+        });
     },
 
-    logout({commit}){
-        // make request to logout
+    logout({ commit }) {
+      // make request to logout
 
-        // Then clear local storage
-        commit('setIsLoggedIn', false);
-        commit('setToken', '');
+      // Then clear local storage
+      commit("setIsLoggedIn", false);
+      commit("setToken", "");
     }
   },
-
 
   mutations: {
     setUserCreated(state, userCreated) {
@@ -97,17 +96,17 @@ export default {
     setCreateUserValidationErrors(state, errors) {
       state.validationErrors.createUser = errors;
     },
-    setLoginRequestStatus(state, loginRequestStatus){
-        state.loginRequestStatus = loginRequestStatus;
+    setLoginRequestStatus(state, loginRequestStatus) {
+      state.loginRequestStatus = loginRequestStatus;
     },
-    setIsLoggedIn(state, isLoggedIn){
-        state.isLoggedIn = isLoggedIn;
+    setIsLoggedIn(state, isLoggedIn) {
+      state.isLoggedIn = isLoggedIn;
     },
-    setToken(state, token){
-        state.token = token;
+    setToken(state, token) {
+      state.token = token;
     },
-    setLoginValidationErrors(state, errors){
-        state.validationErrors.login = errors;
+    setLoginValidationErrors(state, errors) {
+      state.validationErrors.login = errors;
     }
   },
 
@@ -115,17 +114,17 @@ export default {
     getCreateUserValidationErrors(state) {
       return state.validationErrors.createUser;
     },
-    getLoginRequestStatus(state){
-        state.loginRequestStatus;
+    getLoginRequestStatus(state) {
+      state.loginRequestStatus;
     },
-    getIsLoggedIn(state){
-        state.isLoggedIn;
+    getIsLoggedIn(state) {
+      state.isLoggedIn;
     },
-    getToken(state){
-        state.token;
+    getToken(state) {
+      state.token;
     },
-    getLoginValidationErrors(state){
-        state.validationErrors.login;
+    getLoginValidationErrors(state) {
+      state.validationErrors.login;
     }
   }
 };

@@ -7,9 +7,9 @@ export default {
     return axios.post(DEVCAMPER_CONFIG.API_URL + "auth/register", user);
   },
 
-  login(user){
+  login(user) {
     return axios.post(DEVCAMPER_CONFIG.API_URL + "auth/login", user);
-  },
+  }
 
   // /*
   //  POST  /api/v1/cafes/{cafeID}/like

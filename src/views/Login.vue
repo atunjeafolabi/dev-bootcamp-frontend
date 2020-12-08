@@ -78,18 +78,18 @@
 import LOADING from "../utils/constants";
 import { validationMixin } from "vuelidate";
 import { required, email } from "vuelidate/lib/validators";
-import { mapState } from 'vuex';
+import { mapState } from "vuex";
 
 export default {
-  name: 'login',
+  name: "login",
 
-  data(){
+  data() {
     return {
       user: {
-        email: '',
-        password: ''
+        email: "",
+        password: ""
       }
-    }
+    };
   },
 
   computed: {
@@ -109,7 +109,7 @@ export default {
     },
     hasServerValidationErrors() {
       return this.serverValidationErrors !== "";
-    },
+    }
   },
 
   mixins: [validationMixin],
@@ -135,14 +135,13 @@ export default {
 
       await this.$store.dispatch("user/login", this.user);
 
-      if(this.isLoggedIn){
-        this.$router.push({name: 'bootcamps'});
+      if (this.isLoggedIn) {
+        this.$router.push({ name: "bootcamps" });
       }
     },
     triggerValidation() {
       this.$v.$touch();
     }
-  },
-  
-}
+  }
+};
 </script>
