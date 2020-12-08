@@ -75,6 +75,14 @@ export default {
                 }
             })
     },
+
+    logout({commit}){
+        // make request to logout
+
+        // Then clear local storage
+        commit('setIsLoggedIn', false);
+        commit('setToken', '');
+    }
   },
 
 

@@ -17,9 +17,14 @@
       <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav ml-auto">
           <li class="nav-item">
-            <router-link class="nav-link" to="/login">
-              <i class="fas fa-sign-in-alt"></i> Login
+            <router-link class="nav-link" :to="{name: 'login'}" v-if="!isLoggedIn">
+              <i class="fas fa-sign-in-alt"></i>
+              Login
             </router-link>
+            <a class="nav-link" href="/" @click.prevent="logout()" v-if="isLoggedIn">
+              <i class="fas fa-sign-in-alt"></i>
+              Logout
+            </a>
           </li>
           <li class="nav-item">
             <router-link class="nav-link" to="/register">
@@ -39,3 +44,23 @@
     </div>
   </nav>
 </template>
+
+<script>
+import { mapState } from 'vuex'
+
+export default {
+  name: 'navbar',
+  computed: {
+    ...mapState({
+      isLoggedIn: state => state.user.isLoggedIn,
+    }),
+  },
+  methods: {
+    logout() {
+      console.log('logout w3')
+      this.$store.dispatch('user/logout');
+      this.$router.push({name: 'login'})
+    }
+  },
+}
+</script>
