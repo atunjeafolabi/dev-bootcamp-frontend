@@ -4,7 +4,7 @@
       <div class="col-md-8 m-auto">
         <div class="card bg-white py-2 px-4">
           <div class="card-body">
-            <a href="login.html">Back to login</a>
+            <router-link :to="{name: 'login'}">Back to login</router-link>
             <h1 class="mb-2">Reset Password</h1>
             <p>
               Use this form to reset your password using the registered email

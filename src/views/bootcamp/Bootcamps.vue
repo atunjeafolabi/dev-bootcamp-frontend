@@ -190,7 +190,6 @@ export default {
       page: this.$route.query.page,
       limit: 4
     });
-    this.$store.dispatch("review/getAllReviews");
   }
 };
 </script>
