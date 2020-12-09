@@ -6,56 +6,38 @@
         <div class="col-md-8">
           <router-link
             class="btn btn-secondary my-3"
-            :to="{ name: 'view-bootcamp' }"
+            :to="{ name: 'view-bootcamp', params: { id: bootcampId } }"
           >
             <i class="fas fa-chevron-left"></i> Bootcamp Info
           </router-link>
-
-          <h1 class="mb-4">DevWorks Bootcamp Reviews</h1>
+          
+          <loader v-if="isBootcampRequestLoading" />
+          <h1 class="mb-4" v-if="!isBootcampRequestLoading">{{ bootcamp.name}} Reviews</h1>
           <!-- Reviews -->
-          <div class="card mb-3">
-            <h5 class="card-header bg-dark text-white">Fantastic Bootcamp</h5>
-            <div class="card-body">
-              <h5 class="card-title">
-                Rating: <span class="text-success">10</span>
-              </h5>
-              <p class="card-text">
-                Lorem, ipsum dolor sit amet consectetur adipisicing elit.
-                Commodi similique mollitia, praesentium, animi harum officia
-                dolores corporis ex tempore consequuntur dolorem ullam dolorum
-                magnam corrupti quaerat tempora repudiandae! Similique,
-                molestiae. Iste, blanditiis recusandae unde tenetur eius
-                exercitationem rerum a fuga.
-              </p>
-              <p class="text-muted">Writtern By Kevin Smith</p>
+          <loader v-if="isReviewsRequestLoading" />
+          <template v-if="isReviewsRequestSuccess">
+            <div class="card mb-3" v-for="review in reviews" :key="review.id">
+              <h5 class="card-header bg-dark text-white">{{review.title}}</h5>
+              <div class="card-body">
+                <h5 class="card-title">
+                  Rating: <span class="text-success">{{review.rating}}</span>
+                </h5>
+                <p class="card-text">
+                  {{review.text}}
+                </p>
+                <p class="text-muted">Writtern By {{review.user.name}}</p>
+              </div>
             </div>
-          </div>
-
-          <div class="card mb-3">
-            <h5 class="card-header bg-dark text-white">Learned a Lot</h5>
-            <div class="card-body">
-              <h5 class="card-title">
-                Rating: <span class="text-success">9</span>
-              </h5>
-              <p class="card-text">
-                Lorem, ipsum dolor sit amet consectetur adipisicing elit.
-                Commodi similique mollitia, praesentium, animi harum officia
-                dolores corporis ex tempore consequuntur dolorem ullam dolorum
-                magnam corrupti quaerat tempora repudiandae! Similique,
-                molestiae. Iste, blanditiis recusandae unde tenetur eius
-                exercitationem rerum a fuga.
-              </p>
-              <p class="text-muted">Writtern By Jill Samson</p>
-            </div>
-          </div>
+          </template>
+          <request-not-successful v-if="isReviewsRequestFail"/>
         </div>
         <!-- Sidebar -->
         <div class="col-md-4">
           <!-- Rating -->
           <h1 class="text-center my-4">
-            <span class="badge badge-secondary badge-success rounded-circle p-3"
-              >8.8</span
-            >
+            <span class="badge badge-secondary badge-success rounded-circle p-3">
+              {{isBootcampRequestLoading ? '' : bootcamp.averageRating}}
+            </span>
             Rating
           </h1>
           <!-- Buttons -->
@@ -70,3 +52,50 @@
     </div>
   </section>
 </template>
+
+<script>
+import { mapState } from 'vuex';
+import Loader from '../../components/Loader.vue';
+import LOADING from "../../utils/constants";
+import { RequestNotSuccessful } from "../../components/RequestNotSuccessful";
+
+export default {
+  name: 'reviews',
+  components: {
+    Loader,
+    RequestNotSuccessful
+  },
+  created () {
+    this.$store.dispatch('review/loadReviews', this.bootcampId);
+    this.$store.dispatch('bootcamp/loadBootcamp', {id: this.bootcampId});
+  },
+  computed: {
+    ...mapState({
+      reviews: state => state.review.reviews.data,
+      reviewsLoadStatus: state => state.review.reviewsLoadStatus
+    }),
+    ...mapState({
+      bootcamp: state => state.bootcamp.bootcamp.data,
+      bootcampLoadStatus: state => state.bootcamp.bootcampLoadStatus
+    }),
+    bootcampId() {
+      return this.$route.params.bootcampId; 
+    },
+    isBootcampRequestLoading(){
+      return this.bootcampLoadStatus == LOADING.IN_PROGRESS;
+    },
+    isReviewsRequestLoading(){
+      return this.reviewsLoadStatus == LOADING.IN_PROGRESS;
+    },
+    isReviewsRequestSuccess(){
+      return this.reviewsLoadStatus == LOADING.SUCCESS;
+    },
+    isReviewsRequestFail(){
+      return this.reviewsLoadStatus == LOADING.FAILURE;
+    },
+  },
+  methods: {
+
+  },
+}
+</script>

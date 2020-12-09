@@ -9,22 +9,9 @@ export default {
 
   login(user) {
     return axios.post(DEVCAMPER_CONFIG.API_URL + "auth/login", user);
-  }
+  },
 
-  // /*
-  //  POST  /api/v1/cafes/{cafeID}/like
-  //  */
-  // postLikeCafe: function( slug ){
-  //     return axios.post( ROAST_CONFIG.API_URL + '/cafes/' + slug + '/like' );
-  // },
-  // /*
-  //  DELETE /api/v1/cafes/{cafeID}/like
-  //  */
-  // deleteLikeCafe: function( slug ){
-  //     return axios.delete( ROAST_CONFIG.API_URL + '/cafes/' + slug + '/like' );
-  // },
-
-  // deleteCafe: function( slug ){
-  //     return axios.delete( ROAST_CONFIG.API_URL + '/cafes/' + slug );
-  // }
+  getUser(id) {
+    return axios.get(DEVCAMPER_CONFIG.API_URL + "users/" + id);
+  },
 };

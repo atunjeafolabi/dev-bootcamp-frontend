@@ -4,7 +4,10 @@ import LOADING from "../../utils/constants";
 export default {
   namespaced: true,
   state: {
+    // user
     user: [],
+    userLoadStatus: LOADING.NOT_STARTED,
+
     // user creation
     userCreationLoadStatus: LOADING.NOT_STARTED,
     userCreated: false,
@@ -39,19 +42,18 @@ export default {
         });
     },
 
-    // loadUser({ commit }, data) {
-    //   commit("setUserLoadStatus", 1);
+    loadUser({ commit }, id) {
+      commit("setUserLoadStatus", LOADING.IN_PROGRESS);
 
-    //   UserAPI.getUser(data.id)
-    //     .then(response => {
-    //       commit("setUser", response.data);
-    //       commit("setUserLoadStatus", 2);
-    //     })
-    //     .catch(function() {
-    //       commit("setUser", {});
-    //       commit("setUserLoadStatus", 3);
-    //     });
-    // }
+      UserAPI.getUser(id)
+        .then(response => {
+          commit("setUser", response.data);
+          commit("setUserLoadStatus", LOADING.SUCCESS);
+        })
+        .catch(function() {
+          commit("setUserLoadStatus", LOADING.FAILURE);
+        });
+    },
 
     login({ commit }, user) {
       commit("setLoginRequestStatus", LOADING.IN_PROGRESS);
@@ -107,6 +109,12 @@ export default {
     },
     setLoginValidationErrors(state, errors) {
       state.validationErrors.login = errors;
+    },
+    setUserLoadStatus(state, loadUserStatus){
+        state.loadUserStatus = loadUserStatus
+    },
+    setUser(state, user){
+      state.user = user;
     }
   },
 
@@ -115,16 +123,22 @@ export default {
       return state.validationErrors.createUser;
     },
     getLoginRequestStatus(state) {
-      state.loginRequestStatus;
+      return state.loginRequestStatus;
     },
     getIsLoggedIn(state) {
-      state.isLoggedIn;
+      return state.isLoggedIn;
     },
     getToken(state) {
-      state.token;
+      return state.token;
     },
     getLoginValidationErrors(state) {
-      state.validationErrors.login;
+      return state.validationErrors.login;
+    },
+    getLoadUserStatus(state){
+      return state.loadUserStatus;
+    },
+    getUser(state){
+      return state.user;
     }
   }
 };

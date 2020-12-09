@@ -71,7 +71,7 @@
             </h1>
             <!-- Buttons -->
             <router-link
-              :to="{ name: 'reviews' }"
+              :to="{ name: 'reviews', params: { bootcampId: bootcamp._id } }"
               class="btn btn-dark btn-block my-3"
             >
               <i class="fas fa-comments"></i> Read Reviews
